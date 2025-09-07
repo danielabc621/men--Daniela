@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daniela Belalcazar - Menú Desplegable</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f9fafb; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; margin: 0; padding: 0; }
+
+    /* Barra superior */
+    .nav {
+      background: #0f172a;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      font-weight: bold;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand span.dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #22d3ee;
+      display: inline-block;
+    }
+
+    /* Botón hamburguesa */
+    #menu-toggle { display: none; }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 4px;
+    }
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: white;
+    }
+
+    /* Menú */
+    .menu {
+      display: flex;
+      gap: 1rem;
+    }
+    .menu li a {
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      color: #cbd5e1;
+      transition: background 0.3s;
+    }
+    .menu li a:hover {
+      background: #1f2937;
+      color: white;
+    }
+
+    /* Dropdown */
+    .dropdown { position: relative; }
+    .dropdown-panel {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 220px;
+      background: #0b1120;
+      border: 1px solid #1f2937;
+      border-radius: 8px;
+      padding: 0.5rem;
+      display: none;
+      flex-direction: column;
+      z-index: 999;
+    }
+    .dropdown:hover .dropdown-panel {
+      display: flex;
+    }
+    .dropdown-panel a {
+      padding: 0.5rem;
+      color: #cbd5e1;
+      border-radius: 6px;
+    }
+    .dropdown-panel a:hover {
+      background: #1f2937;
+      color: white;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+      .menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0; right: 0;
+        background: #0b1120;
+        flex-direction: column;
+        padding: 1rem;
+      }
+      #menu-toggle:checked ~ nav .menu { display: flex; }
+      .dropdown-panel { position: static; display: none; }
+      .dropdown:hover .dropdown-panel { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="brand"><span class="dot"></span> Daniela Belalcazar </div>
+    <input type="checkbox" id="menu-toggle">
+    <label for="menu-toggle" class="hamburger">
+      <span></span><span></span><span></span>
+    </label>
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html">Inicio</a></li>
+        <li class="dropdown">
+          <a href="#">Actividades ▾</a>
+          <div class="dropdown-panel">
+            <a href="portafolio/index.html">Portafolio / Test Vocacional</a>
+            <a href="frames/index.html">Actividad de Frames</a>
+            <a href="juego-css/index.html">Juego en CSS</a>
+            <a href="figuras/index.html">Figuras Geométricas</a>
+            <a href="formulario/index.html">Formulario en HTML</a>
+            <a href="multimedia/index.html">Composición Multimedia</a>
+            <a href="tabla-periodica/index.html">Tabla Periódica</a>
+          </div>
+        </li>
+     
+      </ul>
+    </nav>
+  </header>
+
+  <main style="padding: 2rem; text-align:center;">
+    <h1>Bienvenido </h1>
+    <p>Usa el menú desplegable para acceder a las actividades.</p>
+  
+  </main>
+</body>
+</html>

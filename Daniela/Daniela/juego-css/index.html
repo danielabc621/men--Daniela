@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego CSS</title>
+</head>
+<body>
+  <h2><!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Juego en CSS — Busca el Tesoro</title>
+  <style>
+    /* ====== Base / tema ====== */
+    :root{
+      --bg:#0f172a;      /* fondo oscuro */
+      --panel:#111827;   /* panel */
+      --tile:#0b1220;    /* ficha */
+      --line:#1f2937;    /* bordes */
+      --text:#e5e7eb;    /* texto */
+      --muted:#94a3b8;   /* texto secundario */
+      --ok:#16a34a;      /* acierto */
+      --bad:#dc2626;     /* fallo */
+      --accent:#22d3ee;  /* acento */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial;
+      background:linear-gradient(180deg,var(--bg),#0b1120);
+      color:var(--text);
+      min-height:100svh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+
+    /* ====== Contenedor del juego ====== */
+    .game{
+      width:min(840px,95vw);
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+      /* contador de intentos */
+      counter-reset:intentos;
+    }
+
+    .head{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .title{
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .hint{
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    /* ====== Cuadrícula ====== */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(5, minmax(60px,1fr));
+      gap:10px;
+    }
+
+    /* ocultar inputs */
+    .grid input{ position:absolute; opacity:0; pointer-events:none; }
+
+    .tile{
+      aspect-ratio:1/1;
+      display:grid;
+      place-items:center;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--tile);
+      cursor:pointer;
+      user-select:none;
+      font-size:clamp(20px,6vw,34px);
+      transition:transform .12s ease, box-shadow .12s ease, background .2s ease, color .2s ease;
+      box-shadow:0 8px 18px rgba(0,0,0,.25);
+      position:relative;
+      overflow:hidden;
+      color:#cbd5e1;
+    }
+    .tile:hover{ transform:translateY(-2px); box-shadow:0 14px 26px rgba(0,0,0,.32); }
+    .tile::after{
+      content:"?";
+      font-weight:800;
+      opacity:.9;
+    }
+
+    /* ====== Estados al destapar ====== */
+    /* Cada casilla suma 1 intento cuando está marcada */
+    .grid input:checked{ counter-increment:intentos 1; }
+
+    /* Bloquear casillas ya elegidas */
+    .grid input:checked + label{
+      pointer-events:none;
+      transform:none;
+      box-shadow:0 8px 18px rgba(0,0,0,.25);
+    }
+
+    /* Fallo por defecto: bomba */
+    .grid input:checked + label{
+      background:#180c0c;
+      border-color:#3b0b0b;
+      color:#fecaca;
+    }
+    .grid input:checked + label::after{ content:"💣"; }
+
+    /* Acierto (el tesoro): trofeo dorado */
+    /* Cambia #t13 si quieres que el tesoro esté en otra casilla */
+    #t13:checked + label{
+      background:#0c1a12;
+      border-color:#14532d;
+      color:#dcfce7;
+      outline:2px solid rgba(34,211,238,.35);
+    }
+    #t13:checked + label::after{ content:"🏆"; }
+
+    /* ====== Panel inferior ====== */
+    .bar{
+      margin-top:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      padding-top:10px;
+      border-top:1px dashed #1f2937;
+    }
+    .tries{
+      font-weight:600;
+    }
+    .tries .num::after{
+      content:counter(intentos);
+      font-variant-numeric:tabular-nums;
+      margin-left:.25rem;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid #0e7490;
+      background:#05222a;
+      color:#e0f2fe;
+      text-decoration:none;
+      font-weight:600;
+      transition:transform .1s ease, background .2s ease, border-color .2s ease;
+    }
+    .btn:hover{ transform:translateY(-1px); background:#062c35; border-color:#22d3ee; }
+
+    /* ====== Mensaje de victoria (CSS :has) ====== */
+    .win{
+      opacity:0; pointer-events:none;
+      transition:opacity .25s ease;
+      color:#bbf7d0;
+      font-weight:700;
+    }
+    .game:has(#t13:checked) .win{
+      opacity:1; pointer-events:auto;
+    }
+
+    /* Accesible en navegadores sin :has -> igual verás el trofeo en la ficha */
+    @media (max-width:520px){
+      .grid{ grid-template-columns:repeat(5, 1fr); gap:8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game" role="application" aria-label="Busca el Tesoro">
+    <div class="head">
+      <div>
+        <div class="title">🎯 Juego en CSS: Busca el Tesoro</div>
+        <div class="hint">Toca las casillas para descubrir. ¡Encuentra el 🏆! (no hay JavaScript)</div>
+      </div>
+      <div class="win">¡Ganaste! 🎉</div>
+    </div>
+
+    <!-- Cuadrícula 5x5 (25 casillas) -->
+    <div class="grid">
+      <!-- Fila 1 -->
+      <input type="checkbox" id="t1"><label class="tile" for="t1" aria-label="Casilla 1"></label>
+      <input type="checkbox" id="t2"><label class="tile" for="t2" aria-label="Casilla 2"></label>
+      <input type="checkbox" id="t3"><label class="tile" for="t3" aria-label="Casilla 3"></label>
+      <input type="checkbox" id="t4"><label class="tile" for="t4" aria-label="Casilla 4"></label>
+      <input type="checkbox" id="t5"><label class="tile" for="t5" aria-label="Casilla 5"></label>
+
+      <!-- Fila 2 -->
+      <input type="checkbox" id="t6"><label class="tile" for="t6" aria-label="Casilla 6"></label>
+      <input type="checkbox" id="t7"><label class="tile" for="t7" aria-label="Casilla 7"></label>
+      <input type="checkbox" id="t8"><label class="tile" for="t8" aria-label="Casilla 8"></label>
+      <input type="checkbox" id="t9"><label class="tile" for="t9" aria-label="Casilla 9"></label>
+      <input type="checkbox" id="t10"><label class="tile" for="t10" aria-label="Casilla 10"></label>
+
+      <!-- Fila 3 -->
+      <input type="checkbox" id="t11"><label class="tile" for="t11" aria-label="Casilla 11"></label>
+      <input type="checkbox" id="t12"><label class="tile" for="t12" aria-label="Casilla 12"></label>
+
+      <!-- 🔑 TESORO: cambia el id aquí si quieres mover el trofeo -->
+      <input type="checkbox" id="t13"><label class="tile" for="t13" aria-label="Casilla 13 (tesoro)"></label>
+
+      <input type="checkbox" id="t14"><label class="tile" for="t14" aria-label="Casilla 14"></label>
+      <input type="checkbox" id="t15"><label class="tile" for="t15" aria-label="Casilla 15"></label>
+
+      <!-- Fila 4 -->
+      <input type="checkbox" id="t16"><label class="tile" for="t16" aria-label="Casilla 16"></label>
+      <input type="checkbox" id="t17"><label class="tile" for="t17" aria-label="Casilla 17"></label>
+      <input type="checkbox" id="t18"><label class="tile" for="t18" aria-label="Casilla 18"></label>
+      <input type="checkbox" id="t19"><label class="tile" for="t19" aria-label="Casilla 19"></label>
+      <input type="checkbox" id="t20"><label class="tile" for="t20" aria-label="Casilla 20"></label>
+
+      <!-- Fila 5 -->
+      <input type="checkbox" id="t21"><label class="tile" for="t21" aria-label="Casilla 21"></label>
+      <input type="checkbox" id="t22"><label class="tile" for="t22" aria-label="Casilla 22"></label>
+      <input type="checkbox" id="t23"><label class="tile" for="t23" aria-label="Casilla 23"></label>
+      <input type="checkbox" id="t24"><label class="tile" for="t24" aria-label="Casilla 24"></label>
+      <input type="checkbox" id="t25"><label class="tile" for="t25" aria-label="Casilla 25"></label>
+    </div>
+
+    <!-- Barra inferior -->
+    <div class="bar">
+      <div class="tries">Intentos: <span class="num" aria-live="polite"></span></div>
+      <a class="btn" href="">Reiniciar</a>
+    </div>
+  </div>
+</h2>
+</body>
+</html>
